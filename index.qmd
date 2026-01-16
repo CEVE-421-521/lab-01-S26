@@ -197,8 +197,8 @@ This section loads the tools (called "packages") we need for this lab.
 ```{julia}
 #| output: false
 if !isfile("Manifest.toml") # <1>
-    using Pkg # <2>
-    Pkg.instantiate() # <3>
+	using Pkg # <2>
+	Pkg.instantiate() # <3>
 end # <4>
 ```
 
@@ -248,7 +248,7 @@ We'll generate a noisy sine wave - this simulates real-world data that has measu
 
 ```{julia}
 #| output: false
-x = range(0, 2pi, length=50) # <1>
+x = range(0, 2pi, length = 50) # <1>
 noise = 0.3 * randn(length(x)) # <2>
 y_noisy = sin.(x) .+ noise # <3>
 y_true = sin.(x) # <4>
@@ -269,12 +269,12 @@ CairoMakie uses a "grammar of graphics" approach: you build plots layer by layer
 #| label: fig-sine
 #| fig-cap: "Noisy sine wave data with true function overlay"
 let # <1>
-    fig = Figure() # <2>
-    ax = Axis(fig[1, 1]; xlabel="x", ylabel="y", title="Noisy Sine Wave") # <3>
-    scatter!(ax, x, y_noisy; label="Noisy data", markersize=8) # <4>
-    lines!(ax, x, y_true; linestyle=:dash, linewidth=2, label="True function") # <5>
-    axislegend(ax) # <6>
-    fig # <7>
+	fig = Figure() # <2>
+	ax = Axis(fig[1, 1]; xlabel = "x", ylabel = "y", title = "Noisy Sine Wave") # <3>
+	scatter!(ax, x, y_noisy; label = "Noisy data", markersize = 8) # <4>
+	lines!(ax, x, y_true; linestyle = :dash, linewidth = 2, label = "True function") # <5>
+	axislegend(ax) # <6>
+	fig # <7>
 end # <1>
 ```
 
