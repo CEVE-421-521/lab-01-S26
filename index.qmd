@@ -196,16 +196,24 @@ This section loads the tools (called "packages") we need for this lab.
 
 ```{julia}
 #| output: false
-if !isfile("Manifest.toml") # <1>
-	using Pkg # <2>
-	Pkg.instantiate() # <3>
-end # <4>
-```
+using Pkg
+try
+    # Activate the local project
+    Pkg.activate(@__DIR__)
 
-1. Check if a file called `Manifest.toml` exists in the current folder. This file tracks which package versions are installed.
-2. Load Julia's built-in package manager, called `Pkg`.
-3. Install all packages listed in `Project.toml`. This only runs if `Manifest.toml` doesn't exist yet.
-4. `end` closes the `if` block. Julia uses `if ... end` instead of curly braces like some other languages.
+    # Check if Manifest exists, if not instantiate
+    if !isfile(joinpath(@__DIR__, "Manifest.toml"))
+        Pkg.instantiate()
+    else
+        # Try to resolve any inconsistencies
+        Pkg.resolve()
+    end
+catch e
+    @warn "Package environment setup failed, attempting recovery" exception=e
+    Pkg.activate(@__DIR__)
+    Pkg.instantiate()
+end
+```
 
 We'll load a popular plotting library
 
@@ -248,7 +256,7 @@ We'll generate a noisy sine wave - this simulates real-world data that has measu
 
 ```{julia}
 #| output: false
-x = range(0, 2pi, length = 50) # <1>
+x = range(0, 2pi, length=50) # <1>
 noise = 0.3 * randn(length(x)) # <2>
 y_noisy = sin.(x) .+ noise # <3>
 y_true = sin.(x) # <4>
@@ -269,12 +277,12 @@ CairoMakie uses a "grammar of graphics" approach: you build plots layer by layer
 #| label: fig-sine
 #| fig-cap: "Noisy sine wave data with true function overlay"
 let # <1>
-	fig = Figure() # <2>
-	ax = Axis(fig[1, 1]; xlabel = "x", ylabel = "y", title = "Noisy Sine Wave") # <3>
-	scatter!(ax, x, y_noisy; label = "Noisy data", markersize = 8) # <4>
-	lines!(ax, x, y_true; linestyle = :dash, linewidth = 2, label = "True function") # <5>
-	axislegend(ax) # <6>
-	fig # <7>
+    fig = Figure() # <2>
+    ax = Axis(fig[1, 1]; xlabel="x", ylabel="y", title="Noisy Sine Wave") # <3>
+    scatter!(ax, x, y_noisy; label="Noisy data", markersize=8) # <4>
+    lines!(ax, x, y_true; linestyle=:dash, linewidth=2, label="True function") # <5>
+    axislegend(ax) # <6>
+    fig # <7>
 end # <1>
 ```
 
